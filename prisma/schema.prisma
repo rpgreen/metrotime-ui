@@ -18,3 +18,16 @@ model users {
   image     String
   createdAt DateTime @default(now())
 }
+
+model snapshots {
+  id         Int      @id @default(autoincrement())
+  time       DateTime @default(now())
+  bus        String
+  route      String
+  location   String
+  lat        String
+  lon        String
+  status     String
+  deviation  String
+  diffmins   Int
+}
