@@ -5,7 +5,7 @@ export const metadata = {
   metadataBase: new URL('https://postgres-prisma.vercel.app'),
   title: 'Tracking Metrobus',
   description:
-    'Tracking Metrobus in St. John\'s, NL,
+    "Tracking Metrobus in St. John's, NL",
 }
 
 const inter = Inter({
