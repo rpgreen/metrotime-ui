@@ -2,15 +2,8 @@
 import React from 'react';
 import { BarChart, Rectangle, XAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 
-export default async function Bar(props) {
+export default async function Bar(props: any) {
 
-    console.log(props)
-    const data = [
-        {
-            route: "1",
-            sum: "2"
-        }
-    ]
     return (
         <div
             className="bg-white/30 p-12 shadow-xl ring-1 ring-gray-900/5 rounded-lg backdrop-blur-lg mx-auto w-full">

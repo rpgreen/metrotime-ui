@@ -8,26 +8,26 @@ import Bar from "@/components/barchart";
 
 export default async function Table() {
     const startTime = Date.now()
-    const users = await prisma.users.findMany()
+    // const users = await prisma.users.findMany()
     const duration = Date.now() - startTime
 
     // const snapshots = await prisma.snapshots.findMany()
 
-    const lateMinsByTime = await prisma.$queryRaw`select time, sum (diffmins * -1)
+    const lateMinsByTime: any[] = await prisma.$queryRaw`select time, sum (diffmins * -1)
                                                   from snapshots
                                                   where status = 'Behind'
                                                   group by time
                                                   order by time`
-    const lateBusesByTime = await prisma.$queryRaw`select time, count (*) as numBehind
+    const lateBusesByTime: any[] = await prisma.$queryRaw`select time, count (*) as numBehind
                                                    from snapshots
                                                    where status = 'Behind'
                                                    group by time
                                                    order by time`
-    const numTotalBusesByTime = await prisma.$queryRaw`select time, count (*) as numBehind
+    const numTotalBusesByTime: any[] = await prisma.$queryRaw`select time, count (*) as numBehind
                                                        from snapshots
                                                        group by time
                                                        order by time`
-    const mostLateBuses = await prisma.$queryRaw`select route, sum(diffmins * -1)
+    const mostLateBuses: any[] = await prisma.$queryRaw`select route, sum(diffmins * -1)
                                                  from snapshots
                                                  where status = 'Behind'
                                                  group by route
@@ -49,7 +49,7 @@ export default async function Table() {
         theArray[index].sum = Number(part.sum);
     });
 
-    console.log(mostLateBuses)
+    // console.log(mostLateBuses)
 
     return (
         <div

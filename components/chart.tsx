@@ -1,7 +1,7 @@
 'use client'
 import {LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer} from 'recharts';
 
-export default async function TimeChart(props) {
+export default async function TimeChart(props: any) {
 
     return (
         <div
