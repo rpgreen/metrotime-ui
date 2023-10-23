@@ -5,6 +5,7 @@ import React from 'react';
 import TimeChart from "@/components/chart";
 import BarChart from "@/components/barchart";
 import Bar from "@/components/barchart";
+import MetroBar from "@/components/barchart";
 
 export default async function Table() {
     const startTime = Date.now()
@@ -68,8 +69,8 @@ export default async function Table() {
             {/*<TimeChart title="Total Buses by Time" dataKey="sum" data={numTotalBusesByTime}/>*/}
             <TimeChart title="Total Late Minutes by Time" dataKey="sum" xKey="time" data={lateMinsByTime}/>
 
-            <TimeChart title="Total Late Minutes by Route" dataKey="sum" xKey="route" data={mostLateBuses}/>
-            {/*<Bar title="Total Late Minutes by Route" dataKey="sum" xKey="route" data={mostLateBuses}/>*/}
+            {/*<TimeChart title="Total Late Minutes by Route" dataKey="sum" xKey="route" data={mostLateBuses}/>*/}
+            <MetroBar title="Total Late Minutes by Route" dataKey="sum" xKey="route" data={mostLateBuses}/>
 
         </div>
     )
