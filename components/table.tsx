@@ -65,7 +65,7 @@ export default async function Table() {
                 <RefreshButton/>
             </div>
 
-            <TimeChart title="Late Buses by Time" dataKey="numbehind" xKey="time" data={lateBusesByTime}/>
+            <TimeChart title="Late Bus Count" dataKey="numbehind" xKey="time" data={lateBusesByTime}/>
             {/*<TimeChart title="Total Buses by Time" dataKey="sum" data={numTotalBusesByTime}/>*/}
             <TimeChart title="Total Late Minutes by Time" dataKey="sum" xKey="time" data={lateMinsByTime}/>
 
