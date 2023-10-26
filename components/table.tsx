@@ -38,7 +38,7 @@ export default async function Table() {
     // console.log(lateMinsByTime)
     // console.log(lateBusesByTime)
     // console.log(numTotalBusesByTime)
-    // console.log(mostLateBuses)
+    console.log(mostLateBuses)
 
     lateBusesByTime.forEach(function(part, index, theArray) {
         theArray[index].numbehind = Number(part.numbehind);
