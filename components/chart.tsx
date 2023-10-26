@@ -29,6 +29,7 @@ export default async function TimeChart(props: any) {
                     type="monotone"
                     dataKey={props.dataKey}
                     stroke="#8884d8"
+                    fill="#ddd"
                     strokeWidth={2}
                     activeDot={{r: 8}}
                 />

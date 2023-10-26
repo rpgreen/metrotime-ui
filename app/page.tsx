@@ -20,7 +20,7 @@ export default function Home() {
 
         <div className="flex justify-between items-center mb-4">
             <div className="space-y-1">
-                <p className="text-sm text-gray-500">Code by <a href="https://twitter.com/robotpatch"><strong>Ryan Green</strong></a></p>
+                <p style={{margin: "10px"}} className="text-sm text-gray-500">Code by <a href="https://ryang.ca"><strong>Ryan Green</strong></a></p>
             </div>
         </div>
 

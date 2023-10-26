@@ -14,43 +14,59 @@ export default async function Table() {
 
     // const snapshots = await prisma.snapshots.findMany()
 
+    // const lookbackDays = 100;
+    // const lookbackStr = `'${lookbackDays} days'`
+    //
+    // const timeExp = `now() - interval '${lookbackStr}'`
+    // console.log(lookbackStr)
+    // console.log(timeExp)
+
     const lateMinsByTime: any[] = await prisma.$queryRaw`select time, sum (diffmins * -1)
-                                                  from snapshots
-                                                  where status = 'Behind'
-                                                  group by time
-                                                  order by time`
+                                                         from snapshots
+                                                         where status = 'Behind'
+                                                         group by time
+                                                         order by time`
+
     const lateBusesByTime: any[] = await prisma.$queryRaw`select time, count (*) as numBehind
-                                                   from snapshots
-                                                   where status = 'Behind'
-                                                   group by time
-                                                   order by time`
+                                                          from snapshots
+                                                          where status = 'Behind'
+                                                          group by time
+                                                          order by time`
     const numTotalBusesByTime: any[] = await prisma.$queryRaw`select time, count (*) as numBehind
-                                                       from snapshots
-                                                       group by time
-                                                       order by time`
+                                                              from snapshots
+                                                              group by time
+                                                              order by time`
     const mostLateBuses: any[] = await prisma.$queryRaw`select route, sum(diffmins * -1)
-                                                 from snapshots
-                                                 where status = 'Behind'
-                                                 group by route
-                                                 order by sum(diffmins)`
+                                                        from snapshots
+                                                        where status = 'Behind'
+                                                        group by route
+                                                        order by sum (diffmins)`
+
+    const percentLateBuses: any[] = await prisma.$queryRaw`select time, sum (case when status = 'Behind' then 1 else 0 end) * 100 / count (*)
+                                                               as percentbehind
+                                                           from snapshots
+                                                           group by time
+                                                           order by time`
 
     // console.log(snapshots)
-    // console.log(lateMinsByTime)
-    // console.log(lateBusesByTime)
-    // console.log(numTotalBusesByTime)
+    console.log(lateMinsByTime)
+    console.log(lateBusesByTime)
+    console.log(numTotalBusesByTime)
     console.log(mostLateBuses)
 
-    lateBusesByTime.forEach(function(part, index, theArray) {
+    lateBusesByTime.forEach(function (part, index, theArray) {
         theArray[index].numbehind = Number(part.numbehind);
     });
-    lateMinsByTime.forEach(function(part, index, theArray) {
+    percentLateBuses.forEach(function (part, index, theArray) {
+        theArray[index].percentbehind = Number(part.percentbehind);
+    });
+    lateMinsByTime.forEach(function (part, index, theArray) {
         theArray[index].sum = Number(part.sum);
     });
-    mostLateBuses.forEach(function(part, index, theArray) {
+    mostLateBuses.forEach(function (part, index, theArray) {
         theArray[index].sum = Number(part.sum);
     });
 
-    // console.log(mostLateBuses)
 
     return (
         <div
@@ -66,6 +82,7 @@ export default async function Table() {
             </div>
 
             <TimeChart title="Late Bus Count" dataKey="numbehind" xKey="time" data={lateBusesByTime}/>
+            <TimeChart title="Percent Late Buses" dataKey="percentbehind" xKey="time" data={percentLateBuses}/>
             {/*<TimeChart title="Total Buses by Time" dataKey="sum" data={numTotalBusesByTime}/>*/}
             <TimeChart title="Total Late Minutes by Time" dataKey="sum" xKey="time" data={lateMinsByTime}/>
 
