@@ -3,9 +3,8 @@ import prisma from '@/lib/prisma'
 import RefreshButton from './refresh-button'
 import React from 'react';
 import TimeChart from "@/components/chart";
-import BarChart from "@/components/barchart";
-import Bar from "@/components/barchart";
 import MetroBar from "@/components/barchart";
+import MetroTable from "@/components/metrotable";
 
 export default async function Table() {
     const startTime = Date.now()
@@ -48,11 +47,21 @@ export default async function Table() {
                                                            group by time
                                                            order by time`
 
+    const routePerf: any[] = await prisma.$queryRaw`select
+          route,
+          percentile_cont(0) within group (order by diffmins asc) as min,
+          percentile_cont(0.50) within group (order by diffmins asc) as p50,
+          percentile_cont(0.95) within group (order by diffmins asc) as p95,
+          percentile_cont(1) within group (order by diffmins asc) as max
+        from snapshots group by route order by p50`
+
     // console.log(snapshots)
-    console.log(lateMinsByTime)
-    console.log(lateBusesByTime)
-    console.log(numTotalBusesByTime)
-    console.log(mostLateBuses)
+    // console.log(lateMinsByTime)
+    // console.log(lateBusesByTime)
+    // console.log(numTotalBusesByTime)
+    // console.log(mostLateBuses)
+
+    console.log(routePerf);
 
     lateBusesByTime.forEach(function (part, index, theArray) {
         theArray[index].numbehind = Number(part.numbehind);
@@ -66,7 +75,6 @@ export default async function Table() {
     mostLateBuses.forEach(function (part, index, theArray) {
         theArray[index].sum = Number(part.sum);
     });
-
 
     return (
         <div
@@ -89,6 +97,7 @@ export default async function Table() {
             {/*<TimeChart title="Total Late Minutes by Route" dataKey="sum" xKey="route" data={mostLateBuses}/>*/}
             <MetroBar title="Total Late Minutes by Route" dataKey="sum" xKey="route" data={mostLateBuses}/>
 
+            <MetroTable data={routePerf}/>
         </div>
     )
 }
