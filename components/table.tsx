@@ -13,7 +13,7 @@ export default async function Table() {
     let [lateMinsByTime,
         lateBusesByTime,
         mostLateBuses,
-        percentLateBuses,
+        // percentLateBuses,
         percent3MinsBehind,
         routePerf,
     ] = await Promise.all<any[]>([
@@ -32,11 +32,11 @@ export default async function Table() {
                          where status = 'Behind'
                          group by route
                          order by sum (diffmins)`,
-        prisma.$queryRaw`select time, sum (case when status = 'Behind' then 1 else 0 end) * 100 / count (*)
-                                                               as percentbehind
-                                                           from snapshots
-                                                           group by time
-                                                           order by time`,
+        // prisma.$queryRaw`select time, sum (case when status = 'Behind' then 1 else 0 end) * 100 / count (*)
+        //                                                        as percentbehind
+        //                                                    from snapshots
+        //                                                    group by time
+        //                                                    order by time`,
         prisma.$queryRaw`select time, sum (case when status = 'Behind' and diffmins <= -3 then 1 else 0 end) * 100 / count (*)
                                                                as percentbehind
                                                            from snapshots
@@ -55,9 +55,9 @@ export default async function Table() {
     lateBusesByTime.forEach(function (part: any, index: number, theArray: any[]) {
         theArray[index].numbehind = Number(part.numbehind);
     });
-    percentLateBuses.forEach(function (part: any, index: number, theArray: any[]) {
-        theArray[index].percentbehind = Number(part.percentbehind);
-    });
+    // percentLateBuses.forEach(function (part: any, index: number, theArray: any[]) {
+    //     theArray[index].percentbehind = Number(part.percentbehind);
+    // });
     percent3MinsBehind.forEach(function (part: any, index: number, theArray: any[]) {
         theArray[index].percentbehind = Number(part.percentbehind);
     });
@@ -82,7 +82,7 @@ export default async function Table() {
             </div>
 
             <TimeChart title="Late Bus Count" dataKey="numbehind" xKey="time" data={lateBusesByTime}/>
-            <TimeChart title="Percent Buses at least 1 Minute Behind" dataKey="percentbehind" xKey="time" data={percentLateBuses}/>
+            {/*<TimeChart title="Percent Buses at least 1 Minute Behind" dataKey="percentbehind" xKey="time" data={percentLateBuses}/>*/}
             <TimeChart title="Percent Buses at least 3 Minutes Behind" dataKey="percentbehind" xKey="time" data={percent3MinsBehind}/>
             {/*<TimeChart title="Total Buses by Time" dataKey="sum" data={numTotalBusesByTime}/>*/}
             <TimeChart title="Total Late Minutes by Time" dataKey="sum" xKey="time" data={lateMinsByTime}/>
