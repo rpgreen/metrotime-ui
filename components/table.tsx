@@ -10,40 +10,39 @@ export default async function Table() {
     const startTime = Date.now()
     const duration = Date.now() - startTime
 
-    const lateMinsByTime: any[] = await prisma.$queryRaw`select time, sum (diffmins * -1)
+    let [lateMinsByTime,
+        lateBusesByTime,
+        mostLateBuses,
+        percentLateBuses,
+        percent3MinsBehind,
+        routePerf,
+    ] = await Promise.all<any[]>([
+        prisma.$queryRaw`select time, sum (diffmins * -1)
                                                          from snapshots
                                                          where status = 'Behind'
                                                          group by time
-                                                         order by time`
-
-    const lateBusesByTime: any[] = await prisma.$queryRaw`select time, count (*) as numBehind
+                                                         order by time`,
+        prisma.$queryRaw`select time, count (*) as numBehind
                                                           from snapshots
                                                           where status = 'Behind'
                                                           group by time
-                                                          order by time`
-    // const numTotalBusesByTime: any[] = await prisma.$queryRaw`select time, count (*) as numBehind
-    //                                                           from snapshots
-    //                                                           group by time
-    //                                                           order by time`
-    const mostLateBuses: any[] = await prisma.$queryRaw`select route, sum(diffmins * -1)
-                                                        from snapshots
-                                                        where status = 'Behind'
-                                                        group by route
-                                                        order by sum (diffmins)`
-
-    const percentLateBuses: any[] = await prisma.$queryRaw`select time, sum (case when status = 'Behind' then 1 else 0 end) * 100 / count (*)
+                                                          order by time`,
+        prisma.$queryRaw`select route, sum(diffmins * -1)
+                         from snapshots
+                         where status = 'Behind'
+                         group by route
+                         order by sum (diffmins)`,
+        prisma.$queryRaw`select time, sum (case when status = 'Behind' then 1 else 0 end) * 100 / count (*)
                                                                as percentbehind
                                                            from snapshots
                                                            group by time
-                                                           order by time`
-
-    const percent3MinsBehind: any[] = await prisma.$queryRaw`select time, sum (case when status = 'Behind' and diffmins <= -3 then 1 else 0 end) * 100 / count (*)
+                                                           order by time`,
+        prisma.$queryRaw`select time, sum (case when status = 'Behind' and diffmins <= -3 then 1 else 0 end) * 100 / count (*)
                                                                as percentbehind
                                                            from snapshots
                                                            group by time
-                                                           order by time`
-
-    const routePerf: any[] = await prisma.$queryRaw`select
+                                                           order by time`,
+        prisma.$queryRaw`select
           route,
           percentile_cont(0) within group (order by diffmins asc) as min,
           percentile_cont(0.05) within group (order by diffmins asc) as p5,
@@ -51,20 +50,21 @@ export default async function Table() {
           percentile_cont(0.95) within group (order by diffmins asc) as p95,
           percentile_cont(1) within group (order by diffmins asc) as max
         from snapshots group by route order by p50`
+    ]);
 
-    lateBusesByTime.forEach(function (part, index, theArray) {
+    lateBusesByTime.forEach(function (part: any, index: number, theArray: any[]) {
         theArray[index].numbehind = Number(part.numbehind);
     });
-    percentLateBuses.forEach(function (part, index, theArray) {
+    percentLateBuses.forEach(function (part: any, index: number, theArray: any[]) {
         theArray[index].percentbehind = Number(part.percentbehind);
     });
-    percent3MinsBehind.forEach(function (part, index, theArray) {
+    percent3MinsBehind.forEach(function (part: any, index: number, theArray: any[]) {
         theArray[index].percentbehind = Number(part.percentbehind);
     });
-    lateMinsByTime.forEach(function (part, index, theArray) {
+    lateMinsByTime.forEach(function (part: any, index: number, theArray: any[]) {
         theArray[index].sum = Number(part.sum);
     });
-    mostLateBuses.forEach(function (part, index, theArray) {
+    mostLateBuses.forEach(function (part: any, index: number, theArray: any[]) {
         theArray[index].sum = Number(part.sum);
     });
 
