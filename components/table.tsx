@@ -40,6 +40,7 @@ export default async function Table() {
     const routePerf: any[] = await prisma.$queryRaw`select
           route,
           percentile_cont(0) within group (order by diffmins asc) as min,
+          percentile_cont(0.05) within group (order by diffmins asc) as p5,
           percentile_cont(0.50) within group (order by diffmins asc) as p50,
           percentile_cont(0.95) within group (order by diffmins asc) as p95,
           percentile_cont(1) within group (order by diffmins asc) as max

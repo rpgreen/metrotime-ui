@@ -13,6 +13,10 @@ const routePerfCols = [
         selector: (row: any) => row.min,
     },
     {
+        name: 'p5',
+        selector: (row: any) => row.p5,
+    },
+    {
         name: 'p50',
         selector: (row: any) => row.p50,
     },
