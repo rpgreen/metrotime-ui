@@ -8,17 +8,7 @@ import MetroTable from "@/components/metrotable";
 
 export default async function Table() {
     const startTime = Date.now()
-    // const users = await prisma.users.findMany()
     const duration = Date.now() - startTime
-
-    // const snapshots = await prisma.snapshots.findMany()
-
-    // const lookbackDays = 100;
-    // const lookbackStr = `'${lookbackDays} days'`
-    //
-    // const timeExp = `now() - interval '${lookbackStr}'`
-    // console.log(lookbackStr)
-    // console.log(timeExp)
 
     const lateMinsByTime: any[] = await prisma.$queryRaw`select time, sum (diffmins * -1)
                                                          from snapshots
@@ -54,14 +44,6 @@ export default async function Table() {
           percentile_cont(0.95) within group (order by diffmins asc) as p95,
           percentile_cont(1) within group (order by diffmins asc) as max
         from snapshots group by route order by p50`
-
-    // console.log(snapshots)
-    // console.log(lateMinsByTime)
-    // console.log(lateBusesByTime)
-    // console.log(numTotalBusesByTime)
-    // console.log(mostLateBuses)
-
-    console.log(routePerf);
 
     lateBusesByTime.forEach(function (part, index, theArray) {
         theArray[index].numbehind = Number(part.numbehind);
