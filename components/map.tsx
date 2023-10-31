@@ -3,12 +3,11 @@
 import * as React from 'react';
 import Map, {Source, Layer} from 'react-map-gl';
 import type {CircleLayer} from 'react-map-gl';
-import type {FeatureCollection} from 'geojson';
 
 export default function LatenessMap(props: any) {
     // console.log(props.data)
 
-    const geojson: FeatureCollection = {
+    const geojson: any = {
         type: 'FeatureCollection',
         features: []
     };
