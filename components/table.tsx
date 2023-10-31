@@ -1,19 +1,20 @@
 // 'use client'
-import prisma from '@/lib/prisma'
 import RefreshButton from './refresh-button'
 import React from 'react';
 import TimeChart from "@/components/chart";
 import MetroBar from "@/components/barchart";
 import MetroTable from "@/components/metrotable";
 import LatenessMap from "@/components/map";
+import {PrismaClient} from "@prisma/client";
 
 export default async function Table() {
     const startTime = Date.now()
 
+    const prisma = new PrismaClient();
+
     let [lateMinsByTime,
         lateBusesByTime,
         mostLateBuses,
-        // percentLateBuses,
         percent3MinsBehind,
         routePerf,
         lateGeos

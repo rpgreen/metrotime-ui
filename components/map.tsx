@@ -26,7 +26,9 @@ export default function LatenessMap(props: any) {
                 coordinates: [lon, lat]
             },
             properties: {
-                diffmins: (-1*p.diffmins)/2
+                diffmins: (-1*p.diffmins)/2,
+                route: p.route,
+                description: p.route
             }
         })
     });
