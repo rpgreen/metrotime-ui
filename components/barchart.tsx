@@ -7,11 +7,11 @@ export default async function MetroBar(props: any) {
     return (
         <div
             className="bg-white/30 p-12 shadow-xl ring-1 ring-gray-900/5 rounded-lg backdrop-blur-lg mx-auto w-full">
-            <p>{props.title}</p>
+            <h2>{props.title}</h2>
 
             {/*<ResponsiveContainer minWidth="1024" width="1024" height="500">*/}
                 <BarChart
-                    width={1024}
+                    width={800}
                     height={500}
                     data={props.data}
                     margin={{

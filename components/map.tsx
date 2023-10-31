@@ -45,6 +45,9 @@ export default function LatenessMap(props: any) {
     };
 
     return (
+        <div
+            className="bg-white/30 p-12 shadow-xl ring-1 ring-gray-900/5 rounded-lg backdrop-blur-lg mx-auto w-full">
+
         <div style={{marginTop: "10px"}}>
             <h2>Late Geos</h2>
 
@@ -55,13 +58,14 @@ export default function LatenessMap(props: any) {
                     latitude: 47.57412,
                     zoom: 13
                 }}
-                style={{width: 1024, height: 800}}
+                style={{width: 800, height: 600}}
                 mapStyle="mapbox://styles/mapbox/streets-v9"
             >
                 <Source id="my-data" type="geojson" data={geojson}>
                     <Layer {...layerStyle} />
                 </Source>
             </Map>
+        </div>
         </div>
     );
 }

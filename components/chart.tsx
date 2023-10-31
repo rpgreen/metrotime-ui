@@ -7,10 +7,10 @@ export default async function TimeChart(props: any) {
         <div
             className="bg-white/30 p-12 shadow-xl ring-1 ring-gray-900/5 rounded-lg backdrop-blur-lg mx-auto w-full">
 
-            <p>{props.title}</p>
+            <h2>{props.title}</h2>
             <LineChart
                 id="test"
-                width={1024}
+                width={800}
                 height={500}
                 data={props.data}
                 margin={{
