@@ -5,10 +5,10 @@ import React from 'react';
 import TimeChart from "@/components/chart";
 import MetroBar from "@/components/barchart";
 import MetroTable from "@/components/metrotable";
+import LatenessMap from "@/components/map";
 
 export default async function Table() {
     const startTime = Date.now()
-    const duration = Date.now() - startTime
 
     let [lateMinsByTime,
         lateBusesByTime,
@@ -16,41 +16,47 @@ export default async function Table() {
         // percentLateBuses,
         percent3MinsBehind,
         routePerf,
+        lateGeos
     ] = await Promise.all<any[]>([
         prisma.$queryRaw`select time, sum (diffmins * -1)
-                                                         from snapshots
-                                                         where status = 'Behind'
-                                                         group by time
-                                                         order by time`,
+                         from snapshots
+                         where status = 'Behind'
+                           and time
+                             > now() - interval '1 week'
+                         group by time
+                         order by time`,
         prisma.$queryRaw`select time, count (*) as numBehind
-                                                          from snapshots
-                                                          where status = 'Behind'
-                                                          group by time
-                                                          order by time`,
+                         from snapshots
+                         where status = 'Behind'
+                           and time > now() - interval '1 week'
+
+                         group by time
+                         order by time`,
         prisma.$queryRaw`select route, sum(diffmins * -1)
                          from snapshots
                          where status = 'Behind'
+                           and time > now() - interval '1 week'
                          group by route
                          order by sum (diffmins)`,
-        // prisma.$queryRaw`select time, sum (case when status = 'Behind' then 1 else 0 end) * 100 / count (*)
-        //                                                        as percentbehind
-        //                                                    from snapshots
-        //                                                    group by time
-        //                                                    order by time`,
         prisma.$queryRaw`select time, sum (case when status = 'Behind' and diffmins <= -3 then 1 else 0 end) * 100 / count (*)
-                                                               as percentbehind
-                                                           from snapshots
-                                                           group by time
-                                                           order by time`,
+                             as percentbehind
+                         from snapshots
+                         where time > now() - interval '1 week'
+                         group by time
+                         order by time`,
         prisma.$queryRaw`select
-          route,
-          percentile_cont(0) within group (order by diffmins asc) as min,
+                             route,
+                             percentile_cont(0) within group (order by diffmins asc) as min,
           percentile_cont(0.05) within group (order by diffmins asc) as p5,
-          percentile_cont(0.50) within group (order by diffmins asc) as p50,
-          percentile_cont(0.95) within group (order by diffmins asc) as p95,
-          percentile_cont(1) within group (order by diffmins asc) as max
-        from snapshots group by route order by p50`
+                             percentile_cont(0.50) within group (order by diffmins asc) as p50,
+                             percentile_cont(0.95) within group (order by diffmins asc) as p95,
+                             percentile_cont(1) within group (order by diffmins asc) as max
+                         from snapshots
+                         where time > now() - interval '1 week'
+                         group by route order by p50`,
+        prisma.$queryRaw`select lat, lon, route, diffmins from snapshots where diffmins < -3 and time > now() - interval '1 week'`
     ]);
+    const duration = Date.now() - startTime
 
     lateBusesByTime.forEach(function (part: any, index: number, theArray: any[]) {
         theArray[index].numbehind = Number(part.numbehind);
@@ -91,6 +97,9 @@ export default async function Table() {
             <MetroBar title="Total Late Minutes by Route" dataKey="sum" xKey="route" data={mostLateBuses}/>
 
             <MetroTable data={routePerf}/>
+
+            <LatenessMap data={lateGeos} />
+
         </div>
     )
 }
