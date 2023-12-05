@@ -32,8 +32,7 @@ export default function LatenessMap(props: any) {
         })
     });
 
-
-    console.log(geojson)
+    // console.log(geojson)
 
     const layerStyle: CircleLayer = {
         id: 'point',

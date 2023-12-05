@@ -7,10 +7,10 @@ import MetroTable from "@/components/metrotable";
 import LatenessMap from "@/components/map";
 import {PrismaClient} from "@prisma/client";
 
+const prisma = new PrismaClient();
+
 export default async function Table() {
     const startTime = Date.now()
-
-    const prisma = new PrismaClient();
 
     let [lateMinsByTime,
         lateBusesByTime,
@@ -58,6 +58,8 @@ export default async function Table() {
         prisma.$queryRaw`select lat, lon, route, diffmins from snapshots where diffmins < -3 and time > now() - interval '1 week'`
     ]);
     const duration = Date.now() - startTime
+
+    console.log(`duration: ${duration}ms`);
 
     lateBusesByTime.forEach(function (part: any, index: number, theArray: any[]) {
         theArray[index].numbehind = Number(part.numbehind);
