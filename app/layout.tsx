@@ -2,10 +2,10 @@ import './globals.css'
 import { Inter } from 'next/font/google'
 
 export const metadata = {
-  metadataBase: new URL('https://postgres-prisma.vercel.app'),
+  metadataBase: new URL('https://metrotime.vercel.app/'),
   title: 'Tracking Metrobus',
   description:
-    "Tracking Metrobus in St. John's, NL",
+    "Tracking Metrobus public transit in St. John's, NL",
 }
 
 const inter = Inter({

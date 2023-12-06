@@ -50,6 +50,10 @@ export default function LatenessMap(props: any) {
         <div style={{marginTop: "10px"}}>
             <h2>Late Geos</h2>
 
+            <p className="chart-desc">
+                Locations of buses at least 3 minutes behind across all time periods.
+            </p>
+
             <Map
                 mapboxAccessToken="pk.eyJ1IjoicnBncmVlbiIsImEiOiJjbG9lYjlnM3gwZmVlMm1vOXY4czQ3YjV0In0.fb3Zrb8sjMnZHQAdFBLBPQ"
                 initialViewState={{

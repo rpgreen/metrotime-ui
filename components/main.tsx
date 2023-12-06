@@ -1,15 +1,18 @@
 // 'use client'
 import RefreshButton from './refresh-button'
 import React from 'react';
-import TimeChart from "@/components/chart";
-import MetroBar from "@/components/barchart";
 import MetroTable from "@/components/metrotable";
 import LatenessMap from "@/components/map";
 import {PrismaClient} from "@prisma/client";
+import TimeChart from "@/components/time-chart";
+import MetroBar from "@/components/bar-chart";
 
+const startTime = Date.now();
 const prisma = new PrismaClient();
+const duration = Date.now() - startTime;
+console.log(`prisma client init: ${duration}ms`)
 
-export default async function Table() {
+export default async function Main() {
     const startTime = Date.now()
 
     let [lateMinsByTime,
@@ -57,16 +60,10 @@ export default async function Table() {
                          group by route order by p50`,
         prisma.$queryRaw`select lat, lon, route, diffmins from snapshots where diffmins < -3 and time > now() - interval '1 week'`
     ]);
-    const duration = Date.now() - startTime
-
-    console.log(`duration: ${duration}ms`);
 
     lateBusesByTime.forEach(function (part: any, index: number, theArray: any[]) {
         theArray[index].numbehind = Number(part.numbehind);
     });
-    // percentLateBuses.forEach(function (part: any, index: number, theArray: any[]) {
-    //     theArray[index].percentbehind = Number(part.percentbehind);
-    // });
     percent3MinsBehind.forEach(function (part: any, index: number, theArray: any[]) {
         theArray[index].percentbehind = Number(part.percentbehind);
     });
@@ -77,6 +74,19 @@ export default async function Table() {
         theArray[index].sum = Number(part.sum);
     });
 
+    let maxBehind: any[] = [];
+    routePerf.forEach(function (part: any, index: number, theArray: any[]) {
+        maxBehind[index] = {};
+        maxBehind[index].route = part.route
+        maxBehind[index].max = Number(part.min * -1);
+    });
+    maxBehind.sort((a, b) => (a.max < b.max ? 1 : -1));
+
+    const duration = Date.now() - startTime
+    console.log(`query duration: ${duration}ms`);
+
+    console.log(maxBehind)
+
     return (
         <div
             className="bg-white/30 p-12 shadow-xl ring-1 ring-gray-900/5 rounded-lg backdrop-blur-lg mx-auto w-full">
@@ -86,17 +96,47 @@ export default async function Table() {
                     <p className="text-sm text-gray-500">
                         Fetched in {duration}ms
                     </p>
+                    <p className="text-sm text-gray-500">
+                        Time Range: 1 week
+                    </p>
                 </div>
                 <RefreshButton/>
             </div>
 
-            <TimeChart title="Late Bus Count" dataKey="numbehind" xKey="time" data={lateBusesByTime}/>
+            <TimeChart
+                title="Late Bus Count"
+                desc="The number of buses reporting as 'behind' for a given time period."
+                dataKey="numbehind"
+                xKey="time"
+                data={lateBusesByTime}/>
             {/*<TimeChart title="Percent Buses at least 1 Minute Behind" dataKey="percentbehind" xKey="time" data={percentLateBuses}/>*/}
-            <TimeChart title="Percent Buses at least 3 Minutes Behind" dataKey="percentbehind" xKey="time" data={percent3MinsBehind}/>
+            <TimeChart
+                title="Percent Buses at least 3 Minutes Behind"
+                desc="The percentage of buses reporting as at least 3 minutes behind for a given time period."
+                dataKey="percentbehind"
+                xKey="time"
+                data={percent3MinsBehind}/>
             {/*<TimeChart title="Total Buses by Time" dataKey="sum" data={numTotalBusesByTime}/>*/}
-            <TimeChart title="Total Late Minutes by Time" dataKey="sum" xKey="time" data={lateMinsByTime}/>
+            <TimeChart
+                title="Total Late Minutes by Time"
+                desc="The total number of minutes behind for all buses in the given time period."
+                dataKey="sum"
+                xKey="time"
+                data={lateMinsByTime}/>
 
-            <MetroBar title="Total Late Minutes by Route" dataKey="sum" xKey="route" data={mostLateBuses}/>
+            <MetroBar
+                title="Total Late Minutes by Route"
+                desc="The total number of minutes behind for each route across all time periods."
+                dataKey="sum"
+                xKey="route"
+                data={mostLateBuses}/>
+
+            <MetroBar
+                title="Max Late Minutes by Route"
+                desc="The maximum number of minutes behind for each route across all time periods."
+                dataKey="max"
+                xKey="route"
+                data={maxBehind}/>
 
             <MetroTable data={routePerf}/>
 

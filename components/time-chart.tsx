@@ -8,6 +8,11 @@ export default async function TimeChart(props: any) {
             className="bg-white/30 p-12 shadow-xl ring-1 ring-gray-900/5 rounded-lg backdrop-blur-lg mx-auto w-full">
 
             <h2>{props.title}</h2>
+
+            <p className="chart-desc">
+                {props.desc}
+            </p>
+
             <LineChart
                 id="test"
                 width={800}
